@@ -12,6 +12,8 @@ flask = "*"
 sqlalchemy = "*"
 config = "*"
 python-dotenv = "*"
+flask-sqlalchemy = "*"
+flask-migrate = "*"
 
 [dev-packages]
 
