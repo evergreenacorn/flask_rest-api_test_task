@@ -21,7 +21,8 @@ class StandartModelMixin:
 
 class TimestampMixin:
     created_at = Column(
-        DateTime, nullable=False,
+        DateTime,
+        default=func.current_timestamp(),
     )
     updated_at = Column(
         DateTime,
@@ -30,27 +31,39 @@ class TimestampMixin:
     )
 
 
-association_table = Table(
-    'book_identifier', db.Model.metadata,
-    Column('author_id', Integer, ForeignKey('author.id'), nullable=True),
-    Column('book_id', Integer, ForeignKey('book.id'), nullable=True)
-)
-
-
 class Author(StandartModelMixin, TimestampMixin, db.Model):
     fio = Column(String, nullable=False)
-    books = relationship(
-        "Book",
-        secondary=association_table,
-        back_populates="authors",
-    )
+    book_id = Column(
+        Integer,
+        ForeignKey("book.id", ondelete='cascade'),
+        nullable=True)
+    books = relationship("Book", backref="authors")
+
+    def __init__(self, fio, books=None):
+        self.fio = fio
+        self.books = books
+
+    def __repr__(self):
+        return '<Author %d>' % self.id
+
+    def create(self):
+        db.session.add(self)
+        db.session.commit()
+        return self
 
 
 class Book(StandartModelMixin, TimestampMixin, db.Model):
     name = Column(String, nullable=False)
     pages_num = Column(Integer, nullable=False)
-    relationship(
-        "Author",
-        secondary=association_table,
-        back_populates="books",
-    )
+
+    def __init__(self, name, pages_num):
+        self.name = name
+        self.pages_num = pages_num
+
+    def __repr__(self):
+        return '<Book %d>' % self.id
+
+    def create(self):
+        db.session.add(self)
+        db.session.commit()
+        return self
