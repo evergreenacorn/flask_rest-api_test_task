@@ -8,6 +8,10 @@ flake8 = "*"
 autopep8 = "*"
 pycodestyle = "*"
 pydocstyle = "*"
+flask = "*"
+sqlalchemy = "*"
+config = "*"
+python-dotenv = "*"
 
 [dev-packages]
 
