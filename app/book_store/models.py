@@ -38,7 +38,6 @@ class Author(StandartModelMixin, TimestampMixin, db.Model):
         "Book",
         secondary=association_table,
         back_populates="authors",
-        # nullable=True
     )
 
 
@@ -49,5 +48,4 @@ class Book(StandartModelMixin, TimestampMixin, db.Model):
         "Author",
         secondary=association_table,
         back_populates="books",
-        # nullable=True
     )
