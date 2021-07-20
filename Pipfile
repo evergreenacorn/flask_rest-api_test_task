@@ -14,7 +14,7 @@ config = "*"
 python-dotenv = "*"
 flask-sqlalchemy = "*"
 flask-migrate = "*"
-flask-restful = "*"
+marshmallow-sqlalchemy = "*"
 
 [dev-packages]
 
