@@ -26,6 +26,10 @@ services:
 
   testtaskflask_db:
     container_name: testtaskflask_db
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
     image: postgres:latest
     restart: "always"
     ports:
