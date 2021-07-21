@@ -37,15 +37,29 @@ class BookViewAPI:
         json_data = request.get_json()
         if not json_data:
             return {'message': 'No input data provided'}, 400
-        # for key, val in json_data.items():
-        #         if hasattr(get_book, key):
-        #             setattr(get_book, key, val)
         # load_instance = True -- Атрибут, ответственный за десереализацию
         # в объект модели, требует активной сессии
-        cls.book_schema.many = False
         session = db.session
-        # ! проверить тип объекта
+        cls.book_schema.many = False
+
+        # Удаляем список значений id авторов из словаря, чтобы он не
+        # десериализовал поле вне схемы. Ищем авторов в БД и заносим в
+        # список
+        authors = []
+        if 'authors' in json_data:
+            authors = [x for x in json_data['authors']]
+            del json_data['authors']
+            authors_obj_list = Author.query.filter(
+                Author.id.in_(authors)
+            ).all()
+
         book = cls.book_schema.load(json_data, session=session)
+
+        # Если авторы из словаря нашлись, то привязываем их к книге
+        if len(authors_obj_list) > 0:
+            for author in authors_obj_list:
+                book.authors.append(author)
+
         result = cls.book_schema.dump(book.create())
         return {"message": "Created new book", "book": result}
 
