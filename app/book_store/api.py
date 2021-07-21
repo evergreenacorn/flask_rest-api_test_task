@@ -1,7 +1,7 @@
 from book_store.schema import (
     AuthorSchema, BookSchema, Author, Book
 )
-from flask import request, jsonify
+from flask import request, jsonify, make_response
 from flask.views import MethodView
 
 
@@ -26,8 +26,12 @@ class BookViewAPI:
             return {'message': str(e)}, 400
 
     @classmethod
-    def post(cls):
-        pass
+    def new_book(cls, **kwargs):
+        json_data = request.get_json()
+        cls.book_schema.many = False
+        book, error = cls.book_schema.load(json_data)
+        result = cls.book_schema.dump(Book.create()).data
+        return make_response(jsonify({"books": book}), 201)
 
 
 class AuthorViewAPI:
