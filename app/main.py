@@ -29,6 +29,12 @@ app.add_url_rule(
     methods=['PUT'],
     view_func=BookViewAPI.update_book)
 
+# update book
+app.add_url_rule(
+    '/api/books/<int:pk>',
+    methods=['DELETE'],
+    view_func=BookViewAPI.delete_book)
+
 
 # Author API
 # get all authors
