@@ -16,6 +16,7 @@ flask-sqlalchemy = "*"
 flask-migrate = "*"
 marshmallow-sqlalchemy = "*"
 flask-marshmallow = "*"
+pytest = "*"
 
 [dev-packages]
 
