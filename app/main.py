@@ -29,7 +29,7 @@ app.add_url_rule(
     methods=['PUT'],
     view_func=BookViewAPI.update_book)
 
-# update book
+# delete book
 app.add_url_rule(
     '/api/books/<int:pk>',
     methods=['DELETE'],
@@ -48,6 +48,24 @@ app.add_url_rule(
     '/api/authors/<int:pk>',
     methods=['GET'],
     view_func=AuthorViewAPI.author_detail)
+
+# create new book
+app.add_url_rule(
+    '/api/authors',
+    methods=['POST'],
+    view_func=AuthorViewAPI.new_author)
+
+# update author
+app.add_url_rule(
+    '/api/authors/<int:pk>',
+    methods=['PUT'],
+    view_func=AuthorViewAPI.update_author)
+
+# update book
+app.add_url_rule(
+    '/api/authors/<int:pk>',
+    methods=['DELETE'],
+    view_func=AuthorViewAPI.delete_author)
 
 
 @app.shell_context_processor
