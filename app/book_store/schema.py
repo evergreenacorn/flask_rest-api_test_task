@@ -1,4 +1,4 @@
-from book_store.models import Book, Author
+from book_store.models import Book, Author, db
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema, auto_field
 # from book_store import ma
 
