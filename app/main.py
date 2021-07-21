@@ -49,7 +49,7 @@ app.add_url_rule(
     methods=['GET'],
     view_func=AuthorViewAPI.author_detail)
 
-# create new book
+# create new author
 app.add_url_rule(
     '/api/authors',
     methods=['POST'],
@@ -61,7 +61,7 @@ app.add_url_rule(
     methods=['PUT'],
     view_func=AuthorViewAPI.update_author)
 
-# update book
+# delete author
 app.add_url_rule(
     '/api/authors/<int:pk>',
     methods=['DELETE'],
