@@ -29,7 +29,8 @@
  - [x] CRUD
  - [x] Фильтры
  - [ ] Тесты(pytest)
- - [ ] Докер
+ - [x] Докер
+ - [ ] docker-compose.yml и .env -> переменные для PostgreSQL
 
 
 ## Описание
