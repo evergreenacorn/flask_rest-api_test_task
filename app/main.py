@@ -1,10 +1,10 @@
 from book_store import create_app, db
 from book_store.models import Author, Book
 from book_store.api import BookViewAPI, AuthorViewAPI
-# from book_store.api import book_list, detail
 
 
 app = create_app()
+# Book API
 app.add_url_rule(
     '/api/books',
     methods=['GET'],
@@ -17,11 +17,12 @@ app.add_url_rule(
 
 
 app.add_url_rule(
-    '/api/books/',
+    '/api/books',
     methods=['POST'],
     view_func=BookViewAPI.new_book)
 
 
+# Author API
 app.add_url_rule(
     '/api/authors',
     methods=['GET'],
