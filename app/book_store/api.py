@@ -1,8 +1,9 @@
 from book_store.schema import (
     AuthorSchema, BookSchema, Author, Book
 )
-from flask import request, jsonify, make_response
-from flask.views import MethodView
+from flask import request
+from sqlalchemy import engine
+from sqlalchemy.orm import scoped_session, sessionmaker
 
 
 class BookViewAPI:
@@ -26,12 +27,16 @@ class BookViewAPI:
             return {'message': str(e)}, 400
 
     @classmethod
-    def new_book(cls, **kwargs):
+    def new_book(cls):
         json_data = request.get_json()
-        cls.book_schema.many = False
-        book, error = cls.book_schema.load(json_data)
-        result = cls.book_schema.dump(Book.create()).data
-        return make_response(jsonify({"books": book}), 201)
+        if not json_data:
+            return {'message': 'No input data provided'}, 400
+        # load_instance = True -- Атрибут, ответственный за десереализацию
+        # в объект модели, требует активной сессии
+        session = scoped_session(sessionmaker(bind=engine))
+        book = cls.book_schema.load(json_data, session=session)
+        result = cls.book_schema.dump(book.create())
+        return {"message": "Created new book", "book": result}
 
 
 class AuthorViewAPI:
