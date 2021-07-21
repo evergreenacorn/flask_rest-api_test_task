@@ -9,7 +9,15 @@ class BookViewAPI:
 
     @classmethod
     def books_list(cls):
-        books = Book.query.all()
+        filter_authors = request.args.get(
+            'authors',
+            default='yes',
+            type=str
+        )
+        if filter_authors == 'yes':
+            books = Book.query.where(Book.authors)
+        else:
+            books = Book.query.filter(Book.authors == None)
         cls.book_schema.many = True
         result = cls.book_schema.dump(books)
         return {"books": result}
@@ -29,10 +37,14 @@ class BookViewAPI:
         json_data = request.get_json()
         if not json_data:
             return {'message': 'No input data provided'}, 400
+        # for key, val in json_data.items():
+        #         if hasattr(get_book, key):
+        #             setattr(get_book, key, val)
         # load_instance = True -- Атрибут, ответственный за десереализацию
         # в объект модели, требует активной сессии
         cls.book_schema.many = False
         session = db.session
+        # ! проверить тип объекта
         book = cls.book_schema.load(json_data, session=session)
         result = cls.book_schema.dump(book.create())
         return {"message": "Created new book", "book": result}
