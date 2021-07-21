@@ -82,9 +82,51 @@ class AuthorViewAPI:
     @classmethod
     def author_detail(cls, pk):
         try:
-            author = Author.query.filter(Author.id == pk).one()
+            get_author = Author.query.get(pk)
             cls.author_schema.many = False
-            result = cls.author_schema.dump(author)
+            result = cls.author_schema.dump(get_author)
             return {"author": result}
+        except Exception as e:
+            return {'message': str(e)}, 400
+
+    @classmethod
+    def new_author(cls):
+        json_data = request.get_json()
+        if not json_data:
+            return {'message': 'No input data provided'}, 400
+        cls.author_schema.many = False
+        session = db.session
+        author = cls.author_schema.load(json_data, session=session)
+        result = cls.author_schema.dump(author.create())
+        return {"message": "Created new author", "author": result}
+
+    @classmethod
+    def update_author(cls, pk):
+        json_data = request.get_json()
+        if not json_data:
+            return {'message': 'No input data provided'}, 400
+        try:
+            get_author = Author.query.get(pk)
+            for key, val in json_data.items():
+                if hasattr(get_author, key):
+                    setattr(get_author, key, val)
+            cls.author_schema.many = False
+            db.session.add(get_author)
+            db.session.commit()
+            result = cls.author_schema.dump(get_author)
+            return {
+                "message": f"Updated author [id: {get_author.id}]",
+                "author": result
+            }
+        except Exception as e:
+            return {'message': str(e)}, 400
+
+    @classmethod
+    def delete_author(cls, pk):
+        try:
+            get_author = Author.query.get(pk)
+            db.session.delete(get_author)
+            db.session.commit()
+            return {"message": f"Deleted author [id: {get_author.id}]"}, 204
         except Exception as e:
             return {'message': str(e)}, 400
