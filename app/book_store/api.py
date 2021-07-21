@@ -42,10 +42,11 @@ class BookViewAPI:
         session = db.session
         cls.book_schema.many = False
 
-        # Удаляем список значений id авторов из словаря, чтобы он не
-        # десериализовал поле вне схемы. Ищем авторов в БД и заносим в
+        # Удаляем список значений id авторов из словаря, чтобы book_schema не
+        # десериализовала поле вне схемы. Ищем авторов в БД и заносим в
         # список
         authors = []
+        authors_obj_list = []
         if 'authors' in json_data:
             authors = [x for x in json_data['authors']]
             del json_data['authors']
