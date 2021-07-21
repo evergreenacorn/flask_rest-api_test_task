@@ -17,6 +17,12 @@ app.add_url_rule(
 
 
 app.add_url_rule(
+    '/api/books/',
+    methods=['POST'],
+    view_func=BookViewAPI.new_book)
+
+
+app.add_url_rule(
     '/api/authors',
     methods=['GET'],
     view_func=AuthorViewAPI.authors_list)
