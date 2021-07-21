@@ -8,6 +8,7 @@ app = create_app()
 # get all books
 app.add_url_rule(
     '/api/books',
+    # defaults={'authors': },
     methods=['GET'],
     view_func=BookViewAPI.books_list)
 
@@ -72,6 +73,7 @@ app.add_url_rule(
 def make_shell_context():
     return {
         'db': db,
+        'app': app,
         'Author': Author,
         'Book': Book
     }
