@@ -17,10 +17,9 @@ class BookViewAPI:
     @classmethod
     def book_detail(cls, pk):
         try:
-            # book_by_id = Book.query.filter(Book.id == pk).one()
-            book_by_id = Book.query.get(pk)
+            get_book = Book.query.get(pk)
             cls.book_schema.many = False
-            result = cls.book_schema.dump(book_by_id)
+            result = cls.book_schema.dump(get_book)
             return {"book": result}
         except Exception as e:
             return {'message': str(e)}, 400
@@ -53,9 +52,19 @@ class BookViewAPI:
             db.session.commit()
             result = cls.book_schema.dump(get_book)
             return {
-                "message": f"Updated book id: {get_book.id}",
+                "message": f"Updated book [id: {get_book.id}]",
                 "book": result
             }
+        except Exception as e:
+            return {'message': str(e)}, 400
+
+    @classmethod
+    def delete_book(cls, pk):
+        try:
+            get_book = Book.query.get(pk)
+            db.session.delete(get_book)
+            db.session.commit()
+            return {"message": f"Deleted book [id: {get_book.id}]"}, 204
         except Exception as e:
             return {'message': str(e)}, 400
 
