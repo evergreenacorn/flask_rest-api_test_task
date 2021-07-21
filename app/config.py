@@ -11,3 +11,8 @@ class Config:
         'sqlite:///' + os.path.join(BASE_DIR, 'app.sqlite3')
     DEBUG = True
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+
+class TestConfig:
+    TESTING = True
+    DATABASE = None
