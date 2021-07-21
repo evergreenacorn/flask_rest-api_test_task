@@ -1,9 +1,7 @@
 from book_store.schema import (
-    AuthorSchema, BookSchema, Author, Book
+    AuthorSchema, BookSchema, Author, Book, db
 )
 from flask import request
-from sqlalchemy import engine
-from sqlalchemy.orm import scoped_session, sessionmaker
 
 
 class BookViewAPI:
@@ -19,7 +17,8 @@ class BookViewAPI:
     @classmethod
     def book_detail(cls, pk):
         try:
-            book_by_id = Book.query.filter(Book.id == pk).one()
+            # book_by_id = Book.query.filter(Book.id == pk).one()
+            book_by_id = Book.query.get(pk)
             cls.book_schema.many = False
             result = cls.book_schema.dump(book_by_id)
             return {"book": result}
@@ -33,10 +32,32 @@ class BookViewAPI:
             return {'message': 'No input data provided'}, 400
         # load_instance = True -- Атрибут, ответственный за десереализацию
         # в объект модели, требует активной сессии
-        session = scoped_session(sessionmaker(bind=engine))
+        cls.book_schema.many = False
+        session = db.session
         book = cls.book_schema.load(json_data, session=session)
         result = cls.book_schema.dump(book.create())
         return {"message": "Created new book", "book": result}
+
+    @classmethod
+    def update_book(cls, pk):
+        json_data = request.get_json()
+        if not json_data:
+            return {'message': 'No input data provided'}, 400
+        try:
+            get_book = Book.query.get(pk)
+            for key, val in json_data.items():
+                if hasattr(get_book, key):
+                    setattr(get_book, key, val)
+            cls.book_schema.many = False
+            db.session.add(get_book)
+            db.session.commit()
+            result = cls.book_schema.dump(get_book)
+            return {
+                "message": f"Updated book id: {get_book.id}",
+                "book": result
+            }
+        except Exception as e:
+            return {'message': str(e)}, 400
 
 
 class AuthorViewAPI:
