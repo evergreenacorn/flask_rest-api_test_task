@@ -18,4 +18,9 @@ class Config:
 
 class TestConfig:
     TESTING = True
-    DATABASE = None
+    BCRYPT_LOG_ROUNDS = 4
+    # SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(BASE_DIR, 'app.sqlite3')
+    # DATABASE = 'sqlite:///'
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///'
+    WTF_CSRF_ENABLED = False
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
