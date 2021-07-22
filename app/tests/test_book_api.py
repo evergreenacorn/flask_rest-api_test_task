@@ -1,0 +1,16 @@
+from test_app import Book, Author
+
+
+def test_book_list(testing_client, init_database): ...
+
+
+def test_book_detail(testing_client, init_database): ...
+
+
+def test_new_book(testing_client, init_database): ...
+
+
+def test_update_book(testing_client, init_database): ...
+
+
+def test_delete_book(testing_client, init_database): ...

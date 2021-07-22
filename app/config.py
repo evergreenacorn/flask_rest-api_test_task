@@ -17,10 +17,12 @@ class Config:
 
 
 class TestConfig:
+    SECRET_KEY = 'bad_secret_keyedfcvdswed'
     TESTING = True
+    DEBUG = True
     BCRYPT_LOG_ROUNDS = 4
     # SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(BASE_DIR, 'app.sqlite3')
     # DATABASE = 'sqlite:///'
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///'
-    WTF_CSRF_ENABLED = False
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(BASE_DIR, 'app_test.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    WTF_CSRF_ENABLED = False
