@@ -17,6 +17,7 @@ flask-migrate = "*"
 marshmallow-sqlalchemy = "*"
 flask-marshmallow = "*"
 pytest = "*"
+psycopg2-binary = "*"
 
 [dev-packages]
 
