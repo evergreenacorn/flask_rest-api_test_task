@@ -6,14 +6,12 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
-    # env_file:
-    #   - .env_file
-    environment:
-      - FLASK_APP=main.py
+    env_file:
+      - .env_file
     volumes:
       - ./app:/home/python/app
-    command: bash -c "flask db init && flask db migrate && flask db upgrade"
-    command: bash -c "flask run --no-debugger"
+    # command: bash -c "flask db init && flask db migrate && flask db upgrade"
+    command: bash -c "flask run -h 0.0.0.0 --no-debugger"
     links:
       - testtaskflask_db
     depends_on:
@@ -30,8 +28,10 @@ services:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+      - POSTGRES_HOST_AUTH_METHOD=trust
+      - POSTGRES_HOST=localhost
     image: postgres:latest
-    restart: "always"
+    restart: "on-failure"
     ports:
       - 5432:5432
 
