@@ -14,10 +14,10 @@ class BookViewAPI:
             default='yes',
             type=str
         )
-        if filter_authors == 'yes':
-            books = Book.query.where(Book.authors)
-        else:
+        if filter_authors == 'no':
             books = Book.query.filter(Book.authors == None)
+        else:
+            books = Book.query.where(Book.authors)
         cls.book_schema.many = True
         result = cls.book_schema.dump(books)
         return {"books": result}
