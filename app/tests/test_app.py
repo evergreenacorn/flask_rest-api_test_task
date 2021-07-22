@@ -1,12 +1,5 @@
-from flask_marshmallow import Marshmallow
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
-from flask.app import Flask
 from config import TestConfig
-from flask import Flask
-import tempfile
 import pytest
-import os
 from book_store import create_app, db
 from book_store.models import Author, Book
 from book_store.routes import configure_routes
@@ -47,32 +40,15 @@ def init_database():
         ("КОМПЬЮТЕРНЫЕ СЕТИ", 731)
     )
     books_list = [Book(name=x, pages_num=y) for x, y in books_data]
-    for book in books_list:
+    # 3 книги без авторов
+    for book in books_list[2:]:
+        db.session.add(book)
+    # 2 книги с авторами
+    for book, author in zip(books_list[:2], authors_list[:2]):
+        book.authors.append(author)
         db.session.add(book)
 
     db.session.commit()
     yield db
     db.session.remove()
     db.drop_all()
-
-
-def test_books_empty_list(testing_client, init_database):
-    response = testing_client.get("/api/books?authors=yes")
-    assert response.status_code == 200
-    assert response.json == {'books': []}
-
-def test_books_detail_first_book(testing_client, init_database):
-    response = testing_client.get("/api/books?authors=yes")
-    assert response.status_code == 200
-    assert response.json == {'books': [
-        {
-            'name': 'СБРОНИК ЗАДАЧ ПО МАТЕМАТИКЕ',
-            'pages_num': 199
-        }
-    ]}
-
-
-def test_api_authors_not_empty_list(testing_client, init_database):
-    response = testing_client.get("/api/authors")
-    assert response.status_code == 200
-    assert response.data != b'{"authors":[]}\n'
