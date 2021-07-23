@@ -18,6 +18,14 @@ class StandartModelMixin:
     def __tablename__(cls):
         return cls.__name__.lower()
 
+    def create(self):
+        db.session.add(self)
+        db.session.commit()
+        return self
+
+    def __repr__(self):
+        return '<{} {}>'.format(self.__class__.__name__, self.id)
+
 
 class TimestampMixin:
     created_at = Column(
@@ -43,14 +51,6 @@ class Author(StandartModelMixin, TimestampMixin, db.Model):
         self.fio = fio
         self.books = books
 
-    def __repr__(self):
-        return '<Author %d>' % self.id
-
-    def create(self):
-        db.session.add(self)
-        db.session.commit()
-        return self
-
 
 class Book(StandartModelMixin, TimestampMixin, db.Model):
     name = Column(String, nullable=False)
@@ -59,11 +59,3 @@ class Book(StandartModelMixin, TimestampMixin, db.Model):
     def __init__(self, name, pages_num):
         self.name = name
         self.pages_num = pages_num
-
-    def __repr__(self):
-        return '<Book %d>' % self.id
-
-    def create(self):
-        db.session.add(self)
-        db.session.commit()
-        return self
