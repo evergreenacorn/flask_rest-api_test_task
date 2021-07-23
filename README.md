@@ -39,7 +39,7 @@
     - authors: /api/authors
 2. CRUD-функции для каждого **маршрута({model} - books|authors)** осуществлены согласно REST:
     - /api/{model} - GET(список всех записей {model})
-    - /api/{model}/\<int:id> - GET(детальная информация {model})
+    - /api/{model}/\<int:id> - GET(детальная информация записи {model})
     - /api/{model}/ - POST(создание новой записи {model})
     - /api/{model}/\<int:id> - PUT(обновление записи {model})
     - /api/{model}/\<int:id> - DELETE(удаление записи {model})
