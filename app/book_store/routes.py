@@ -84,7 +84,7 @@ def parse_class_rules(rules_class):
     """
         Функция возвращает список классовых методов,
         устанавливающих маршрут по url, название которых
-        начинается с 'add_'
+        начинается с 'add_'.
 
         прим.: add_delete_author_rule
     """
@@ -99,9 +99,6 @@ def configure_routes(app):
     """
         Функция динамически генерирует списки методов
         для привязки маршрутов каждого API и вызывает их.
-        p.s.
-        Очень хотелось поюзать интроспекцию и динамически
-        собрать списки классовых методов
     """
     rules_classes = (BookRules, AuthorRules)
     rules = (parse_class_rules(rule_cls) for rule_cls in rules_classes)
