@@ -12,12 +12,9 @@ def test_author_list(testing_client, init_database):
 
 def test_author_detail_first(testing_client, init_database):
     response = testing_client.get("/api/authors/1")
-    try:
-        first_author = Author.query.get(1)
-        assert response.status_code == 200
-        assert response.json['author']['fio'] == first_author.fio
-    except Exception as e:
-        raise e
+    first_author = Author.query.get(1)
+    assert response.status_code == 200
+    assert response.json['author']['fio'] == first_author.fio
 
 
 def test_new_author(testing_client, init_database):
