@@ -89,8 +89,7 @@ class BookViewAPI:
     def delete_book(cls, pk):
         try:
             get_book = Book.query.get(pk)
-            db.session.delete(get_book)
-            db.session.commit()
+            get_book.delete()
             return {"message": f"Deleted book [id: {get_book.id}]"}, 204
         except Exception as e:
             return {'message': str(e)}, 400
@@ -152,8 +151,7 @@ class AuthorViewAPI:
     def delete_author(cls, pk):
         try:
             get_author = Author.query.get(pk)
-            db.session.delete(get_author)
-            db.session.commit()
+            get_author.delete()
             return {"message": f"Deleted author [id: {get_author.id}]"}, 204
         except Exception as e:
             return {'message': str(e)}, 400
