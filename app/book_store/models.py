@@ -23,6 +23,10 @@ class StandartModelMixin:
         db.session.commit()
         return self
 
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
     def __repr__(self):
         return '<{} {}>'.format(self.__class__.__name__, self.id)
 
