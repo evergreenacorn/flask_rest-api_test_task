@@ -1,7 +1,7 @@
 version: '3.4'
 
 services:
-  testtaskflask_app:
+  flaskapp:
     container_name: testtaskflask_app
     build:
       context: .
@@ -10,30 +10,28 @@ services:
       - .env_file
     volumes:
       - ./app:/home/python/app
-    # command: bash -c "flask db init && flask db migrate && flask db upgrade"
+    command: bash -c "flask db init && flask db migrate && flask db upgrade"
     command: bash -c "flask run -h 0.0.0.0 --no-debugger"
     links:
-      - testtaskflask_db
+      - flaskdb
     depends_on:
-      - testtaskflask_db
+      - flaskdb
     ports:
       - 5000:5000
     networks:
       - testtaskflask-api
 
 
-  testtaskflask_db:
+  flaskdb:
     container_name: testtaskflask_db
-    environment:
-      - POSTGRES_DB=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_HOST_AUTH_METHOD=trust
-      - POSTGRES_HOST=localhost
+    env_file:
+      - .env_psql
     image: postgres:latest
     restart: "on-failure"
     ports:
       - 5432:5432
+    networks:
+      - testtaskflask-api
 
 
 networks:
