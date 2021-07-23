@@ -88,16 +88,13 @@ def configure_routes(app):
         Очень хотелось поюзать интроспекцию и динамически
         собрать списки классовых методов
     """
-    book_rules = [
+    parse_rules = lambda rules_class: [
         method[1] for method in inspect.getmembers(
-            BookRules, predicate=inspect.ismethod
+            rules_class, predicate=inspect.ismethod
         ) if str(method[0]).startswith('add_')
     ]
-    author_rules = [
-        method[1] for method in inspect.getmembers(
-            AuthorRules, predicate=inspect.ismethod
-        ) if str(method[0]).startswith('add_')
-    ]
-    rules = book_rules + author_rules
-    for rule in rules:
-        rule(app)
+    rules_classes = (BookRules, AuthorRules)
+    rules = (parse_rules(x) for x in rules_classes)
+    for class_rulls_list in rules:
+        for rule in class_rulls_list:
+            rule(app)
