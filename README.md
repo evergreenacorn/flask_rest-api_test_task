@@ -25,14 +25,13 @@
 Данное приложение поднять на docker-compose.
 
 
-### Осталось:
- - [x] CRUD
- - [x] Фильтры
- - [x] Тесты(pytest)
- - [x] Докер
- - [ ] docker-compose.yml и .env -> переменные для PostgreSQL
- - [ ] поправить config.py в соответствии с системными переменными
-
+## Как установить
+1. Выбрать папку для скачивания репозитория
+2. git clone https://github.com/evergreenacorn/flask_rest-api_test_task.git
+3. cd flask_rest-api_test_task/ && docker-compose up -d
+4. docker-compose exec flaskapp flask db init
+5. docker-compose exec flaskapp flask db migrate
+6. docker-compose exec flaskapp flask db upgrade
 
 ## Описание
 1. Существует 2 основных API:
@@ -46,3 +45,6 @@
     - /api/{model}/\<int:id> - DELETE(удаление записи книги)
 3. Фильтрация книг по наличию/отсутствию авторов осуществлена с помощь передачи параметра в конце url get-запроса: /api/books?authors=**yes|no**, где **yes** или **no** указываются на выбор, или при переходе по /api/books - выполняется неявный /api/books?authors=**yes**
 4. При создании новой записи book -> /api/books (POST-запрос), есть возможность передать список id существующих авторов в теле запроса, чтобы привязать авторов к книге. Пример: { ..., "authors": [1, 2]}.
+
+## Как провести тесты
+docker-compose exec flaskapp pytest
