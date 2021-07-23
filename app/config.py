@@ -10,8 +10,6 @@ class Config:
     SQLALCHEMY_DATABASE_URI = getenv('DATABASE_URL', '').replace(
         'postgres://', 'postgresql://') or \
         'sqlite:///' + os.path.join(BASE_DIR, 'app.sqlite3')
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL', '') or 'sqlite:///' + os.path.join(BASE_DIR, 'app.sqlite3')
-    # SQLALCHEMY_DATABASE_URI = "postgresql://postgres:postgres@localhost:5432/postgres"
     DEBUG = getenv("DEBUG") or True
     SQLALCHEMY_TRACK_MODIFICATIONS = getenv("SQLALCHEMY_TRACK_MODIFICATIONS") or False
 
