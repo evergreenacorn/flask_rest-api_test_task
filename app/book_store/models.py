@@ -26,6 +26,7 @@ class StandartModelMixin:
     def delete(self):
         db.session.delete(self)
         db.session.commit()
+        self.id = None
 
     def __repr__(self):
         return '<{} {}>'.format(self.__class__.__name__, self.id)
