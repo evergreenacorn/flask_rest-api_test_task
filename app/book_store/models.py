@@ -18,7 +18,7 @@ class StandartModelMixin:
     def __tablename__(cls):
         return cls.__name__.lower()
 
-    def create(self):
+    def update_or_create(self):
         db.session.add(self)
         db.session.commit()
         return self

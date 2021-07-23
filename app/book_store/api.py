@@ -61,7 +61,7 @@ class BookViewAPI:
             for author in authors_obj_list:
                 book.authors.append(author)
 
-        result = cls.book_schema.dump(book.create())
+        result = cls.book_schema.dump(book.update_or_create())
         return {"message": "Created new book", "book": result}
 
     @classmethod
@@ -75,8 +75,7 @@ class BookViewAPI:
                 if hasattr(get_book, key):
                     setattr(get_book, key, val)
             cls.book_schema.many = False
-            db.session.add(get_book)
-            db.session.commit()
+            get_book.update_or_create()
             result = cls.book_schema.dump(get_book)
             return {
                 "message": f"Updated book [id: {get_book.id}]",
@@ -123,7 +122,7 @@ class AuthorViewAPI:
         cls.author_schema.many = False
         session = db.session
         author = cls.author_schema.load(json_data, session=session)
-        result = cls.author_schema.dump(author.create())
+        result = cls.author_schema.dump(author.update_or_create())
         return {"message": "Created new author", "author": result}
 
     @classmethod
@@ -137,8 +136,7 @@ class AuthorViewAPI:
                 if hasattr(get_author, key):
                     setattr(get_author, key, val)
             cls.author_schema.many = False
-            db.session.add(get_author)
-            db.session.commit()
+            get_author.update_or_create()
             result = cls.author_schema.dump(get_author)
             return {
                 "message": f"Updated author [id: {get_author.id}]",

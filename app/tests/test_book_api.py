@@ -78,7 +78,7 @@ def test_update_book(testing_client, init_database):
 
 
 def test_delete_book(testing_client, init_database):
-    deleted_book = Book(name="УДАЛИ МЕНЯ", pages_num=111).create()
+    deleted_book = Book(name="УДАЛИ МЕНЯ", pages_num=111).update_or_create()
     data = {"book": {
         "id": deleted_book.id,
         "name": deleted_book.name,

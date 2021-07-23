@@ -53,7 +53,7 @@ def test_update_author(testing_client, init_database):
 
 
 def test_delete_author(testing_client, init_database):
-    deleted_author = Author(fio="ДЯДЯ СТЕПА СВЕТОФОР").create()
+    deleted_author = Author(fio="ДЯДЯ СТЕПА СВЕТОФОР").update_or_create()
     data = {"author": {
         "id": deleted_author.id,
         "fio": deleted_author.fio,
