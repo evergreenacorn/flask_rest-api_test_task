@@ -40,7 +40,7 @@
 2. CRUD-функции для каждого **маршрута({model} - books|authors)** осуществлены согласно REST:
     - /api/{model} - GET(список всех записей {model})
     - /api/{model}/\<int:id> - GET(детальная информация записи {model})
-    - /api/{model}/ - POST(создание новой записи {model})
+    - /api/{model} - POST(создание новой записи {model})
     - /api/{model}/\<int:id> - PUT(обновление записи {model})
     - /api/{model}/\<int:id> - DELETE(удаление записи {model})
 3. Фильтрация книг по наличию/отсутствию авторов осуществлена с помощь передачи параметра в конце url get-запроса: /api/books?authors=**yes|no**, где **yes** или **no** указываются на выбор, или при переходе по /api/books - выполняется неявный /api/books?authors=**yes**
