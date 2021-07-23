@@ -80,6 +80,21 @@ class AuthorRules:
             view_func=cls.author_api.delete_author)
 
 
+def parse_class_rules(rules_class):
+    """
+        Функция возвращает список классовых методов,
+        устанавливающих маршрут по url, название которых
+        начинается с 'add_'
+
+        прим.: add_delete_author_rule
+    """
+    return [
+        method[1] for method in inspect.getmembers(
+            rules_class, predicate=inspect.ismethod
+        ) if str(method[0]).startswith('add_')
+    ]
+
+
 def configure_routes(app):
     """
         Функция динамически генерирует списки методов
@@ -88,13 +103,8 @@ def configure_routes(app):
         Очень хотелось поюзать интроспекцию и динамически
         собрать списки классовых методов
     """
-    parse_rules = lambda rules_class: [
-        method[1] for method in inspect.getmembers(
-            rules_class, predicate=inspect.ismethod
-        ) if str(method[0]).startswith('add_')
-    ]
     rules_classes = (BookRules, AuthorRules)
-    rules = (parse_rules(x) for x in rules_classes)
+    rules = (parse_class_rules(rule_cls) for rule_cls in rules_classes)
     for class_rulls_list in rules:
         for rule in class_rulls_list:
             rule(app)
