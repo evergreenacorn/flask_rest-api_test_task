@@ -84,24 +84,32 @@ class AuthorRules:
             view_func=cls.author_api.delete_author)
 
 
-def register_api(app, view, url, pk='id', pk_type='int'):
+def register_api(app, view, view_name, url, pk='id', pk_type='int'):
+    view_func = view.as_view(view_name)
     app.add_url_rule(
-        url, default={pk: None}, view_func=view, methods=['GET']
+        url, defaults={pk: None}, view_func=view_func, methods=['GET']
     )
-    app.add_url_rule(url, view_func=view, methods=['POST'])
+    app.add_url_rule(url, view_func=view_func, methods=['POST'])
     app.add_url_rule(
-        f"{url}<{pk_type}:{pk}>", view_func=view,
+        f"{url}<{pk_type}:{pk}>", view_func=view_func,
         methods=['GET', 'PUT', 'DELETE']
     )
 
 
 def configure_apis(app):
     apis_data = (
-        (BookAPIView, '/books/', 'book_id', 'int'),
-        (AuthorAPIView, '/authors/', 'author_id', 'int')
+        (BookAPIView, 'books', '/api/books/', 'book_id', 'int'),
+        (AuthorAPIView, 'authors', '/api/authors/', 'author_id', 'int')
     )
-    for api_view_class, url, pk, pk_type in apis_data:
-        register_api(app, api_view_class, url, pk, pk_type)
+    for api_view_class, view_name, url, pk, pk_type in apis_data:
+        register_api(
+            app=app,
+            view=api_view_class,
+            view_name=view_name,
+            url=url,
+            pk=pk,
+            pk_type=pk_type
+        )
 
 
 def parse_class_rules(rules_class):
