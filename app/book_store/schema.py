@@ -6,7 +6,6 @@ class AuthorSchema(SQLAlchemyAutoSchema):
     """
         Класс схемы(аналог сериализатора drf) модели Author
     """
-
     class Meta:
         model = Author
         include_fk = True

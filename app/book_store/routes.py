@@ -1,4 +1,7 @@
-from book_store.views import BookViewAPI, AuthorViewAPI
+from book_store.views import (
+    BookViewAPI, AuthorViewAPI,
+    BookAPIView, AuthorAPIView
+)
 
 import inspect
 
@@ -79,6 +82,26 @@ class AuthorRules:
             '/api/authors/<int:pk>',
             methods=['DELETE'],
             view_func=cls.author_api.delete_author)
+
+
+def register_api(app, view, url, pk='id', pk_type='int'):
+    app.add_url_rule(
+        url, default={pk: None}, view_func=view, methods=['GET']
+    )
+    app.add_url_rule(url, view_func=view, methods=['POST'])
+    app.add_url_rule(
+        f"{url}<{pk_type}:{pk}>", view_func=view,
+        methods=['GET', 'PUT', 'DELETE']
+    )
+
+
+def configure_apis(app):
+    apis_data = (
+        (BookAPIView, '/books/', 'book_id', 'int'),
+        (AuthorAPIView, '/authors/', 'author_id', 'int')
+    )
+    for api_view_class, url, pk, pk_type in apis_data:
+        register_api(app, api_view_class, url, pk, pk_type)
 
 
 def parse_class_rules(rules_class):
