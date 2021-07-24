@@ -1,4 +1,5 @@
-from book_store.api import BookViewAPI, AuthorViewAPI
+from book_store.views import BookViewAPI, AuthorViewAPI
+
 import inspect
 
 
