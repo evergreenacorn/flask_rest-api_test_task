@@ -199,7 +199,23 @@ class BookAPIView(MethodView):
         if not json_data:
             return jsonify(errors='No input data provided'), 204
         try:
-            pass
+            session = db.session
+            book_schema = self.schema(many=False)
+            if 'authors' in json_data:
+                authors = [x for x in json_data['authors']]
+                del json_data['authors']
+                authors_obj_list = Author.query.filter(
+                    Author.id.in_(authors)
+                ).all()
+
+            book = book_schema.load(json_data, session=session)
+
+            if len(authors_obj_list) > 0:
+                for author in authors_obj_list:
+                    book.authors.append(author)
+
+            result = book_schema.dump(book.update_or_create())
+            return jsonify(data=result), 200
         except ValidationError as e:  # ! Уточнить, при про ошибку валидации данных
             # ! пришедших с клиента
             return jsonify(errors=e.messages), 400
@@ -214,16 +230,43 @@ class BookAPIView(MethodView):
         json_data = request.get_json()
         if not json_data:
             return jsonify(errors='No input data provided'), 204
-        pass
+        book = self.model.query.get_or_404(book_id)
+        try:
+            session = db.session
+            book_schema = self.schema(many=False)
+            # author_schema = AuthorSchema(many=True, exclude=('book_id',))
+            if 'authors' in json_data:
+                # serialized_authors = author_schema.load(json_data['authors'], session=session)
+                authors = [x for x in json_data['authors']]
+                del json_data['authors']
+                authors_obj_list = Author.query.filter(
+                    Author.id.in_(authors)
+                ).all()
+
+            book = book_schema.load(json_data, session=session)
+
+            if len(authors_obj_list) > 0:
+                for author in authors_obj_list:
+                    book.authors.append(author)
+
+            result = book_schema.dump(book.update_or_create())
+            return jsonify(data=result), 201
+        except ValidationError as e:
+            return jsonify(errors=e), 400
+        except Exception as e:
+            return jsonify(errors=e), 404
 
     def delete(self, book_id):
         """
             Функция удаляет экземпляр объекта Book из сессии.
         """
         book = self.model.query.get_or_404(book_id)
-        self.model.delete()
-        data = {"message": f"Deleted book [id: {book.id}]"}
-        return jsonify(data=data), 200
+        try:
+            self.model.delete()
+            data = {"message": f"Deleted book [id: {book.id}]"}
+            return jsonify(data=data), 200
+        except Exception as e:
+            return jsonify(errors=e), 404
 
 
 class AuthorAPIView(MethodView):
@@ -248,12 +291,41 @@ class AuthorAPIView(MethodView):
         except Exception as e:
             return jsonify(errors=e), 404
 
-    def post(self): ...
+    def post(self):
+        json_data = request.get_json()
+        if not json_data:
+            return jsonify(errors='No input data provided'), 204
+        try:
+            self.schema.many = False
+            session = db.session
+            author = self.schema.load(json_data, session=session)
+            result = self.schema.dump(author.update_or_create())
+            return jsonify(data=result), 200
+        except ValidationError as e:
+            return jsonify(errors=e), 400
+        except Exception as e:
+            return jsonify(errors=e), 404
 
-    def put(self, author_id): ...
+    def put(self, author_id):
+        json_data = request.get_json()
+        if not json_data:
+            return jsonify(errors='No input data provided'), 204
+        try:
+            self.schema.many = False
+            session = db.session
+            author = self.schema.load(json_data, session=session)
+            result = self.schema.dump(author.update_or_create())
+            return jsonify(data=result), 201
+        except ValidationError as e:
+            return jsonify(errors=e), 400
+        except Exception as e:
+            return jsonify(errors=e), 404
 
     def delete(self, author_id):
         author = self.model.query.get_or_404(author_id)
-        self.model.delete()
-        data = {"message": f"Deleted author [id: {author.id}]"}
-        return jsonify(data=data), 200
+        try:
+            self.model.delete()
+            data = {"message": f"Deleted author [id: {author.id}]"}
+            return jsonify(data=data), 200
+        except Exception as e:
+            return jsonify(errors=e), 404
