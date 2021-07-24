@@ -159,7 +159,7 @@ class AuthorViewAPI:
 
 class BookAPIView(MethodView):
     model = Book
-    schema = BookSchema()
+    schema = BookSchema
 
     def get(self, book_id):
         """
@@ -167,6 +167,16 @@ class BookAPIView(MethodView):
             в зависимости от наличия/отсутствия значения
             book_id отличного от None.
         """
+        filter_by = "authors"
+        filter_authors = request.args.get(
+                filter_by,
+                default='yes',
+                type=str
+        )
+        if filter_authors == 'no':
+            self.schema = self.schema(exclude=[filter_by])
+        else:
+            self.schema = self.schema()
         if book_id is not None:
             books = self.model.query.get_or_404(book_id)
             self.schema.many = False
@@ -174,16 +184,8 @@ class BookAPIView(MethodView):
             books = self.model.query.all()
             self.schema.many = True
         try:
-            filter_authors = request.args.get(
-                'authors',
-                default='yes',
-                type=str
-            )
-            if filter_authors == 'no':
-                self.schema.Meta.exclude = ("authors",)
-            else:
-                self.schema.Meta.exclude = None
             result = self.schema.dump(books)
+            self.schema = BookSchema
             return jsonify(data=result), 200
         except Exception as e:
             return jsonify(errors=e), 404
