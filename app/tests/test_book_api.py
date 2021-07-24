@@ -72,7 +72,7 @@ def test_update_book(testing_client, init_database):
         "/api/books/1",
         json=data,
         headers=headers)
-    assert response.status_code == 200
+    assert response.status_code == 201
     assert response.json['message'] == f"Updated book [id: {updated_book.id}]"
     assert response.json['book']['name'] == "ЛОЛКЕКЧЕБУРЕК"
 
@@ -93,4 +93,4 @@ def test_delete_book(testing_client, init_database):
         "/api/books/1",
         json=data,
         headers=headers)
-    assert response.status_code == 204
+    assert response.status_code == 200

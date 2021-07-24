@@ -47,7 +47,7 @@ def test_update_author(testing_client, init_database):
         "/api/authors/1",
         json=data,
         headers=headers)
-    assert response.status_code == 200
+    assert response.status_code == 201
     assert response.json['message'] == f"Updated author [id: {updated_author.id}]"
     assert response.json['author']['fio'] == "ИВАНОВ СТЕПАН ИГНАТЬЕВИЧ"
 
@@ -67,4 +67,4 @@ def test_delete_author(testing_client, init_database):
         "/api/authors/1",
         json=data,
         headers=headers)
-    assert response.status_code == 204
+    assert response.status_code == 200
