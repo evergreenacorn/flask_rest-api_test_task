@@ -1,7 +1,9 @@
 from book_store.schema import (
     AuthorSchema, BookSchema, Author, Book, db
 )
-from flask import request
+from flask import request, jsonify
+from flask.views import MethodView
+from marshmallow import ValidationError
 
 
 class BookViewAPI:
@@ -153,3 +155,103 @@ class AuthorViewAPI:
             return {"message": f"Deleted author [id: {get_author.id}]"}, 204
         except Exception as e:
             return {'message': str(e)}, 400
+
+
+class BookAPIView(MethodView):
+    model = Book
+    schema = BookSchema()
+
+    def get(self, book_id):
+        """
+            Функция возвращает объект/список объектов Book
+            в зависимости от наличия/отсутствия значения
+            book_id отличного от None.
+        """
+        if book_id is not None:
+            books = self.model.query.get_or_404(book_id)
+            self.schema.many = False
+        else:
+            books = self.model.query.all()
+            self.schema.many = True
+        try:
+            filter_authors = request.args.get(
+                'authors',
+                default='yes',
+                type=str
+            )
+            if filter_authors == 'no':
+                self.schema.Meta.exclude = ("authors",)
+            else:
+                self.schema.Meta.exclude = None
+            result = self.schema.dump(books)
+            return jsonify(data=result), 200
+        except Exception as e:
+            return jsonify(errors=e), 404
+
+    def post(self):
+        """
+            Функция создает новый экземпляр объекта Book
+            и сохраняет его в сессии.
+        """
+        json_data = request.get_json()
+        if not json_data:
+            return jsonify(errors='No input data provided'), 204
+        try:
+            pass
+        except ValidationError as e:  # ! Уточнить, при про ошибку валидации данных
+            # ! пришедших с клиента
+            return jsonify(errors=e.messages), 400
+        except Exception as e:
+            return jsonify(errors=e), 404
+
+    def put(self, book_id):
+        """
+            Функция обновляет данные экземпляра объекта Book
+            и сохраняет его в сессии.
+        """
+        json_data = request.get_json()
+        if not json_data:
+            return jsonify(errors='No input data provided'), 204
+        pass
+
+    def delete(self, book_id):
+        """
+            Функция удаляет экземпляр объекта Book из сессии.
+        """
+        book = self.model.query.get_or_404(book_id)
+        self.model.delete()
+        data = {"message": f"Deleted book [id: {book.id}]"}
+        return jsonify(data=data), 200
+
+
+class AuthorAPIView(MethodView):
+    model = Author
+    schema = AuthorSchema()
+
+    def get(self, author_id):
+        """
+            Функция возвращает объект/список объектов Author
+            в зависимости от наличия/отсутствия значения
+            author_id отличного от None.
+        """
+        if author_id is not None:
+            authors = self.model.query.get_or_404(author_id)
+            self.schema.many = False
+        else:
+            authors = self.model.query.all()
+            self.schema.many = True
+        try:
+            result = self.schema.dump(authors)
+            return jsonify(data=result), 200
+        except Exception as e:
+            return jsonify(errors=e), 404
+
+    def post(self): ...
+
+    def put(self, author_id): ...
+
+    def delete(self, author_id):
+        author = self.model.query.get_or_404(author_id)
+        self.model.delete()
+        data = {"message": f"Deleted author [id: {author.id}]"}
+        return jsonify(data=data), 200
